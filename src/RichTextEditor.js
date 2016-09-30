@@ -318,6 +318,9 @@ function getBlockStyle(block: ContentBlock): string {
 function createEmptyValue(decorators): EditorValue {
     if (!decorators){
         decorators = [LinkDecorator, ImageDecorator]
+    }else{
+        decorators.push(LinkDecorator)
+        decorators.push(ImageDecorator)
     }
     const deocrator = new CompositeDecorator(decorators)
   return EditorValue.createEmpty(decorator);
