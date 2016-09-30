@@ -313,9 +313,13 @@ function getBlockStyle(block: ContentBlock): string {
   }
 }
 
-const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
+// const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
 
-function createEmptyValue(): EditorValue {
+function createEmptyValue(decorators): EditorValue {
+    if (!decorators){
+        decorators = [LinkDecorator, ImageDecorator]
+    }
+    const deocrator = new CompositeDecorator(decorators)
   return EditorValue.createEmpty(decorator);
 }
 
@@ -331,4 +335,4 @@ Object.assign(RichTextEditor, {
   createValueFromString,
 });
 
-export {EditorValue, decorator, createEmptyValue, createValueFromString};
+export {EditorValue, createEmptyValue, createValueFromString};
