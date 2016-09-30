@@ -322,7 +322,7 @@ function createEmptyValue(decorators): EditorValue {
         decorators.push(LinkDecorator)
         decorators.push(ImageDecorator)
     }
-    const deocrator = new CompositeDecorator(decorators)
+    const decorator = new CompositeDecorator(decorators)
   return EditorValue.createEmpty(decorator);
 }
 
