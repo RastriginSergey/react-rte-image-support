@@ -6,10 +6,12 @@ import changeBlockDepth from './lib/changeBlockDepth';
 import changeBlockType from './lib/changeBlockType';
 import insertBlockAfter from './lib/insertBlockAfter';
 import isListItem from './lib/isListItem';
+import getBlocksInSelection from './lib/getBlocksInSelection';
 import isSoftNewlineEvent from 'draft-js/lib/isSoftNewlineEvent';
 import EditorToolbar from './lib/EditorToolbar';
 import EditorValue from './lib/EditorValue';
 import LinkDecorator from './lib/LinkDecorator';
+import ImageDecorator from './lib/ImageDecorator';
 import cx from 'classnames';
 import autobind from 'class-autobind';
 import {EventEmitter} from 'events';
@@ -253,10 +255,43 @@ export default class RichTextEditor extends Component {
 
   _onChange(editorState: EditorState) {
     let {onChange, value} = this.props;
-    if (onChange != null) {
-      let newValue = value.setEditorState(editorState);
-      onChange(newValue);
+    if (onChange == null) {
+      return;
     }
+    let newValue = value.setEditorState(editorState);
+    let newEditorState = newValue.getEditorState();
+    this._handleInlineImageSelection(newEditorState);
+    onChange(newValue);
+  }
+
+    _handleInlineImageSelection(editorState: EditorState) {
+    let selection = editorState.getSelection();
+    let blocks = getBlocksInSelection(editorState);
+
+    const selectImage = (block, offset) => {
+      const imageKey = block.getEntityAt(offset);
+      Entity.mergeData(imageKey, {selected: true});
+    };
+
+    let isInMiddleBlock = (index) => index > 0 && index < blocks.size - 1;
+    let isWithinStartBlockSelection = (offset, index) => (
+      index === 0 && offset > selection.getStartOffset()
+    );
+    let isWithinEndBlockSelection = (offset, index) => (
+      index === blocks.size - 1 && offset < selection.getEndOffset()
+    );
+
+    blocks.toIndexedSeq().forEach((block, index) => {
+      ImageDecorator.strategy(
+        block,
+        (offset) => {
+          if (isWithinStartBlockSelection(offset, index) ||
+              isInMiddleBlock(index) ||
+              isWithinEndBlockSelection(offset, index)) {
+            selectImage(block, offset);
+          }
+        });
+    });
   }
 
   _focus() {
@@ -278,7 +313,7 @@ function getBlockStyle(block: ContentBlock): string {
   }
 }
 
-const decorator = new CompositeDecorator([LinkDecorator]);
+const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
 
 function createEmptyValue(): EditorValue {
   return EditorValue.createEmpty(decorator);

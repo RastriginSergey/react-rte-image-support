@@ -3,7 +3,7 @@ import {hasCommandModifier} from 'draft-js/lib/KeyBindingUtil';
 
 import React, {Component} from 'react';
 import ReactDOM from 'react-dom';
-import {EditorState, Entity, RichUtils} from 'draft-js';
+import {EditorState, Entity, RichUtils, Modifier} from 'draft-js';
 import {ENTITY_TYPE} from 'draft-js-utils';
 import {
   INLINE_STYLE_BUTTONS,
@@ -11,7 +11,7 @@ import {
   BLOCK_TYPE_BUTTONS,
 } from './EditorToolbarConfig';
 import StyleButton from './StyleButton';
-import PopoverIconButton from '../ui/PopoverIconButton';
+import PopoverIconButton,{PopoverImageButton} from '../ui/PopoverIconButton';
 import ButtonGroup from '../ui/ButtonGroup';
 import Dropdown from '../ui/Dropdown';
 import IconButton from '../ui/IconButton';
@@ -68,6 +68,7 @@ export default class EditorToolbar extends Component {
         {this._renderInlineStyleButtons()}
         {this._renderBlockTypeButtons()}
         {this._renderLinkButtons()}
+        {this._renderImageButton()}
         {this._renderBlockTypeDropdown()}
         {this._renderUndoRedo()}
       </div>
@@ -206,6 +207,33 @@ export default class EditorToolbar extends Component {
       }
     }
     this.setState({showLinkInput: !isShowing});
+  }
+
+  _setImage(src: string) {
+    let {editorState} = this.props;
+    let contentState = editorState.getCurrentContent();
+    let selection = editorState.getSelection();
+    let entityKey = Entity.create(ENTITY_TYPE.IMAGE, 'IMMUTABLE', {src});
+    const updatedContent = Modifier.insertText(contentState, selection, ' ', null, entityKey);
+    this.setState({showImageInput: false});
+    this.props.onChange(
+      EditorState.push(editorState, updatedContent)
+    );
+    this._focusEditor();
+  }
+
+  _renderImageButton(): React.Element {
+    return (
+      <ButtonGroup>
+        <PopoverImageButton
+          label="Image"
+          iconName="image"
+          showPopover={this.state.showImageInput}
+          onTogglePopover={this._toggleShowImageInput}
+          onSubmit={this._setImage}
+        />
+      </ButtonGroup>
+    );
   }
 
   _setLink(url: string) {
