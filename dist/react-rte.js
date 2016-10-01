@@ -118,7 +118,10 @@ function(module, exports, __webpack_require__) {
             return result;
         }
     }
-    function createEmptyValue() {
+    // const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
+    function createEmptyValue(decorators) {
+        decorators ? (decorators.push(_LinkDecorator2["default"]), decorators.push(_ImageDecorator2["default"])) : decorators = [ _LinkDecorator2["default"], _ImageDecorator2["default"] ];
+        var decorator = new _draftJs.CompositeDecorator(decorators);
         return _EditorValue2["default"].createEmpty(decorator);
     }
     function createValueFromString(markup, format) {
@@ -126,7 +129,7 @@ function(module, exports, __webpack_require__) {
     }
     Object.defineProperty(exports, "__esModule", {
         value: !0
-    }), exports.createValueFromString = exports.createEmptyValue = exports.decorator = exports.EditorValue = void 0;
+    }), exports.createValueFromString = exports.createEmptyValue = exports.EditorValue = void 0;
     var _extends = Object.assign || function(target) {
         for (var i = 1; i < arguments.length; i++) {
             var source = arguments[i];
@@ -178,7 +181,8 @@ function(module, exports, __webpack_require__) {
                     keyEmitter: this._keyEmitter,
                     editorState: editorState,
                     onChange: this._onChange,
-                    focusEditor: this._focus
+                    focusEditor: this._focus,
+                    toolbarItems: this.props.toolbarItems
                 })), _react2["default"].createElement("div", {
                     className: (0, _classnames2["default"])(_RichTextEditor2["default"].root, className)
                 }, editorToolbar, _react2["default"].createElement("div", {
@@ -309,16 +313,13 @@ function(module, exports, __webpack_require__) {
             }
         } ]), RichTextEditor;
     }(_react.Component);
-    exports["default"] = RichTextEditor;
-    var decorator = new _draftJs.CompositeDecorator([ _LinkDecorator2["default"], _ImageDecorator2["default"] ]);
-    // $FlowIssue - This should probably not be done this way.
+    exports["default"] = RichTextEditor, // $FlowIssue - This should probably not be done this way.
     Object.assign(RichTextEditor, {
         EditorValue: _EditorValue2["default"],
-        decorator: decorator,
         createEmptyValue: createEmptyValue,
         createValueFromString: createValueFromString
-    }), exports.EditorValue = _EditorValue2["default"], exports.decorator = decorator, 
-    exports.createEmptyValue = createEmptyValue, exports.createValueFromString = createValueFromString;
+    }), exports.EditorValue = _EditorValue2["default"], exports.createEmptyValue = createEmptyValue, 
+    exports.createValueFromString = createValueFromString;
 }, /* 1 */
 /***/
 function(module, exports) {
@@ -12081,6 +12082,7 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "_renderBlockTypeDropdown",
             value: function() {
+                if (this.props.toolbarItems.indexOf("Type") == -1) return "";
                 var blockType = this._getCurrentBlockType(), choices = new Map(_EditorToolbarConfig.BLOCK_TYPE_DROPDOWN.map(function(type) {
                     return [ type.style, type.label ];
                 }));
@@ -12093,7 +12095,11 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "_renderBlockTypeButtons",
             value: function() {
-                var _this2 = this, blockType = this._getCurrentBlockType(), buttons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS.map(function(type, index) {
+                var _this2 = this, blockType = this._getCurrentBlockType(), filteredButtons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS;
+                this.props.toolbarItems && (filteredButtons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS.filter(function(element, index, arr) {
+                    return _this2.props.toolbarItems.indexOf(element.label) != -1;
+                }));
+                var buttons = filteredButtons.map(function(type, index) {
                     return _react2["default"].createElement(_StyleButton2["default"], {
                         key: String(index),
                         isActive: type.style === blockType,
@@ -12107,7 +12113,11 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "_renderInlineStyleButtons",
             value: function() {
-                var _this3 = this, editorState = this.props.editorState, currentStyle = editorState.getCurrentInlineStyle(), buttons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS.map(function(type, index) {
+                var _this3 = this, editorState = this.props.editorState, currentStyle = editorState.getCurrentInlineStyle(), filteredButtons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS;
+                this.props.toolbarItems && (filteredButtons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS.filter(function(element, index, arr) {
+                    return _this3.props.toolbarItems.indexOf(element.label) != -1;
+                }));
+                var buttons = filteredButtons.map(function(type, index) {
                     return _react2["default"].createElement(_StyleButton2["default"], {
                         key: String(index),
                         isActive: currentStyle.has(type.style),
@@ -12121,6 +12131,7 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "_renderLinkButtons",
             value: function() {
+                if (this.props.toolbarItems.indexOf("Link") == -1) return "";
                 var editorState = this.props.editorState, selection = editorState.getSelection(), entity = this._getEntityAtCursor(), hasSelection = !selection.isCollapsed(), isCursorOnLink = null != entity && entity.type === _draftJsUtils.ENTITY_TYPE.LINK, shouldShowLinkButton = hasSelection || isCursorOnLink;
                 return _react2["default"].createElement(_ButtonGroup2["default"], null, _react2["default"].createElement(_PopoverIconButton2["default"], {
                     label: "Link",
@@ -12140,6 +12151,7 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "_renderUndoRedo",
             value: function() {
+                if (this.props.toolbarItems.indexOf("Undo") == -1) return "";
                 var editorState = this.props.editorState, canUndo = 0 !== editorState.getUndoStack().size, canRedo = 0 !== editorState.getRedoStack().size;
                 return _react2["default"].createElement(_ButtonGroup2["default"], null, _react2["default"].createElement(_IconButton2["default"], {
                     label: "Undo",
@@ -12196,7 +12208,7 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "_renderImageButton",
             value: function() {
-                return _react2["default"].createElement(_ButtonGroup2["default"], null, _react2["default"].createElement(_PopoverIconButton.PopoverImageButton, {
+                return this.props.toolbarItems.indexOf("Image") == -1 ? "" : _react2["default"].createElement(_ButtonGroup2["default"], null, _react2["default"].createElement(_PopoverIconButton.PopoverImageButton, {
                     label: "Image",
                     iconName: "image",
                     showPopover: this.state.showImageInput,

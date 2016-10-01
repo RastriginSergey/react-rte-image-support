@@ -21520,6 +21520,7 @@
 	            placeholder: 'Tell a story',
 	            toolbarClassName: 'demo-toolbar',
 	            editorClassName: 'demo-editor',
+	            toolbarItems: ['Bold', 'Italic'],
 	            readOnly: this.state.readOnly
 	          })
 	        ),
@@ -21659,7 +21660,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	exports.createValueFromString = exports.createEmptyValue = exports.decorator = exports.EditorValue = undefined;
+	exports.createValueFromString = exports.createEmptyValue = exports.EditorValue = undefined;
 
 	var _extends = Object.assign || function (target) { for (var i = 1; i < arguments.length; i++) { var source = arguments[i]; for (var key in source) { if (Object.prototype.hasOwnProperty.call(source, key)) { target[key] = source[key]; } } } return target; };
 
@@ -21808,7 +21809,8 @@
 	          keyEmitter: this._keyEmitter,
 	          editorState: editorState,
 	          onChange: this._onChange,
-	          focusEditor: this._focus
+	          focusEditor: this._focus,
+	          toolbarItems: this.props.toolbarItems
 	        });
 	      }
 	      return _react2.default.createElement(
@@ -22039,9 +22041,16 @@
 	  }
 	}
 
-	var decorator = new _draftJs.CompositeDecorator([_LinkDecorator2.default, _ImageDecorator2.default]);
+	// const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
 
-	function createEmptyValue() {
+	function createEmptyValue(decorators) {
+	  if (!decorators) {
+	    decorators = [_LinkDecorator2.default, _ImageDecorator2.default];
+	  } else {
+	    decorators.push(_LinkDecorator2.default);
+	    decorators.push(_ImageDecorator2.default);
+	  }
+	  var decorator = new _draftJs.CompositeDecorator(decorators);
 	  return _EditorValue2.default.createEmpty(decorator);
 	}
 
@@ -22052,13 +22061,11 @@
 	// $FlowIssue - This should probably not be done this way.
 	Object.assign(RichTextEditor, {
 	  EditorValue: _EditorValue2.default,
-	  decorator: decorator,
 	  createEmptyValue: createEmptyValue,
 	  createValueFromString: createValueFromString
 	});
 
 	exports.EditorValue = _EditorValue2.default;
-	exports.decorator = decorator;
 	exports.createEmptyValue = createEmptyValue;
 	exports.createValueFromString = createValueFromString;
 
@@ -40106,6 +40113,9 @@
 	  }, {
 	    key: '_renderBlockTypeDropdown',
 	    value: function _renderBlockTypeDropdown() {
+	      if (this.props.toolbarItems.indexOf('Type') == -1) {
+	        return '';
+	      }
 	      var blockType = this._getCurrentBlockType();
 	      var choices = new Map(_EditorToolbarConfig.BLOCK_TYPE_DROPDOWN.map(function (type) {
 	        return [type.style, type.label];
@@ -40129,7 +40139,13 @@
 	      var _this2 = this;
 
 	      var blockType = this._getCurrentBlockType();
-	      var buttons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS.map(function (type, index) {
+	      var filteredButtons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS;
+	      if (this.props.toolbarItems) {
+	        filteredButtons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS.filter(function (element, index, arr) {
+	          return _this2.props.toolbarItems.indexOf(element.label) != -1;
+	        });
+	      }
+	      var buttons = filteredButtons.map(function (type, index) {
 	        return _react2.default.createElement(_StyleButton2.default, {
 	          key: String(index),
 	          isActive: type.style === blockType,
@@ -40152,7 +40168,13 @@
 	      var editorState = this.props.editorState;
 
 	      var currentStyle = editorState.getCurrentInlineStyle();
-	      var buttons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS.map(function (type, index) {
+	      var filteredButtons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS;
+	      if (this.props.toolbarItems) {
+	        filteredButtons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS.filter(function (element, index, arr) {
+	          return _this3.props.toolbarItems.indexOf(element.label) != -1;
+	        });
+	      }
+	      var buttons = filteredButtons.map(function (type, index) {
 	        return _react2.default.createElement(_StyleButton2.default, {
 	          key: String(index),
 	          isActive: currentStyle.has(type.style),
@@ -40170,6 +40192,9 @@
 	  }, {
 	    key: '_renderLinkButtons',
 	    value: function _renderLinkButtons() {
+	      if (this.props.toolbarItems.indexOf('Link') == -1) {
+	        return '';
+	      }
 	      var editorState = this.props.editorState;
 
 	      var selection = editorState.getSelection();
@@ -40200,6 +40225,9 @@
 	  }, {
 	    key: '_renderUndoRedo',
 	    value: function _renderUndoRedo() {
+	      if (this.props.toolbarItems.indexOf('Undo') == -1) {
+	        return '';
+	      }
 	      var editorState = this.props.editorState;
 
 	      var canUndo = editorState.getUndoStack().size !== 0;
@@ -40273,6 +40301,9 @@
 	  }, {
 	    key: '_renderImageButton',
 	    value: function _renderImageButton() {
+	      if (this.props.toolbarItems.indexOf('Image') == -1) {
+	        return '';
+	      }
 	      return _react2.default.createElement(
 	        _ButtonGroup2.default,
 	        null,

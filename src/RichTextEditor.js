@@ -94,6 +94,7 @@ export default class RichTextEditor extends Component {
           editorState={editorState}
           onChange={this._onChange}
           focusEditor={this._focus}
+          toolbarItems={this.props.toolbarItems}
         />
       );
     }
@@ -333,7 +334,6 @@ function createValueFromString(markup: string, format: string): EditorValue {
 // $FlowIssue - This should probably not be done this way.
 Object.assign(RichTextEditor, {
   EditorValue,
-  decorator,
   createEmptyValue,
   createValueFromString,
 });

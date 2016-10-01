@@ -76,6 +76,9 @@ export default class EditorToolbar extends Component {
   }
 
   _renderBlockTypeDropdown() {
+      if(this.props.toolbarItems.indexOf('Type') == -1){
+          return ''
+      }
     let blockType = this._getCurrentBlockType();
     let choices = new Map(
       BLOCK_TYPE_DROPDOWN.map((type) => [type.style, type.label])
@@ -96,7 +99,13 @@ export default class EditorToolbar extends Component {
 
   _renderBlockTypeButtons() {
     let blockType = this._getCurrentBlockType();
-    let buttons = BLOCK_TYPE_BUTTONS.map((type, index) => (
+      let filteredButtons = BLOCK_TYPE_BUTTONS
+      if (this.props.toolbarItems){
+        filteredButtons = BLOCK_TYPE_BUTTONS.filter((element, index, arr)=>{
+            return this.props.toolbarItems.indexOf(element.label) != -1
+        })
+      }
+    let buttons = filteredButtons.map((type, index) => (
       <StyleButton
         key={String(index)}
         isActive={type.style === blockType}
@@ -113,7 +122,13 @@ export default class EditorToolbar extends Component {
   _renderInlineStyleButtons() {
     let {editorState} = this.props;
     let currentStyle = editorState.getCurrentInlineStyle();
-    let buttons = INLINE_STYLE_BUTTONS.map((type, index) => (
+    let filteredButtons = INLINE_STYLE_BUTTONS
+      if (this.props.toolbarItems){
+        filteredButtons = INLINE_STYLE_BUTTONS.filter((element, index, arr)=>{
+            return this.props.toolbarItems.indexOf(element.label) != -1
+        })
+      }
+    let buttons = filteredButtons.map((type, index) => (
       <StyleButton
         key={String(index)}
         isActive={currentStyle.has(type.style)}
@@ -128,6 +143,9 @@ export default class EditorToolbar extends Component {
   }
 
   _renderLinkButtons() {
+      if(this.props.toolbarItems.indexOf('Link') == -1){
+          return ''
+      }
     let {editorState} = this.props;
     let selection = editorState.getSelection();
     let entity = this._getEntityAtCursor();
@@ -156,6 +174,9 @@ export default class EditorToolbar extends Component {
   }
 
   _renderUndoRedo() {
+      if(this.props.toolbarItems.indexOf('Undo') == -1){
+          return ''
+      }
     let {editorState} = this.props;
     let canUndo = editorState.getUndoStack().size !== 0;
     let canRedo = editorState.getRedoStack().size !== 0;
@@ -223,6 +244,9 @@ export default class EditorToolbar extends Component {
   }
 
   _renderImageButton(): React.Element {
+      if(this.props.toolbarItems.indexOf('Image') == -1){
+          return ''
+      }
     return (
       <ButtonGroup>
         <PopoverImageButton
