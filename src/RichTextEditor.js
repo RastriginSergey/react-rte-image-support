@@ -314,7 +314,6 @@ function getBlockStyle(block: ContentBlock): string {
   }
 }
 
-// const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
 
 function createEmptyValue(decorators): EditorValue {
     if (!decorators){
@@ -328,6 +327,8 @@ function createEmptyValue(decorators): EditorValue {
 }
 
 function createValueFromString(markup: string, format: string): EditorValue {
+  const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
+
   return EditorValue.createFromString(markup, format, decorator);
 }
 
