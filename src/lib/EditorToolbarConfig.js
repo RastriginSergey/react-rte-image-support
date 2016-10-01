@@ -2,6 +2,7 @@ export const INLINE_STYLE_BUTTONS = [
   {label: 'Bold', style: 'BOLD'},
   {label: 'Italic', style: 'ITALIC'},
   {label: 'Strikethrough', style: 'STRIKETHROUGH'},
+  {label: 'Underline', style: 'UNDERLINE'},
   {label: 'Monospace', style: 'CODE'},
 ];
 
