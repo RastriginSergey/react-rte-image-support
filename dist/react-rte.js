@@ -118,13 +118,13 @@ function(module, exports, __webpack_require__) {
             return result;
         }
     }
-    // const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
     function createEmptyValue(decorators) {
         decorators ? (decorators.push(_LinkDecorator2["default"]), decorators.push(_ImageDecorator2["default"])) : decorators = [ _LinkDecorator2["default"], _ImageDecorator2["default"] ];
         var decorator = new _draftJs.CompositeDecorator(decorators);
         return _EditorValue2["default"].createEmpty(decorator);
     }
     function createValueFromString(markup, format) {
+        var decorator = new _draftJs.CompositeDecorator([ _LinkDecorator2["default"], _ImageDecorator2["default"] ]);
         return _EditorValue2["default"].createFromString(markup, format, decorator);
     }
     Object.defineProperty(exports, "__esModule", {
@@ -12303,6 +12303,9 @@ function(module, exports) {
     }, {
         label: "Strikethrough",
         style: "STRIKETHROUGH"
+    }, {
+        label: "Underline",
+        style: "UNDERLINE"
     }, {
         label: "Monospace",
         style: "CODE"

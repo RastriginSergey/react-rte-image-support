@@ -22041,8 +22041,6 @@
 	  }
 	}
 
-	// const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
-
 	function createEmptyValue(decorators) {
 	  if (!decorators) {
 	    decorators = [_LinkDecorator2.default, _ImageDecorator2.default];
@@ -22055,6 +22053,8 @@
 	}
 
 	function createValueFromString(markup, format) {
+	  var decorator = new _draftJs.CompositeDecorator([_LinkDecorator2.default, _ImageDecorator2.default]);
+
 	  return _EditorValue2.default.createFromString(markup, format, decorator);
 	}
 
@@ -40413,7 +40413,7 @@
 	Object.defineProperty(exports, "__esModule", {
 	  value: true
 	});
-	var INLINE_STYLE_BUTTONS = exports.INLINE_STYLE_BUTTONS = [{ label: 'Bold', style: 'BOLD' }, { label: 'Italic', style: 'ITALIC' }, { label: 'Strikethrough', style: 'STRIKETHROUGH' }, { label: 'Monospace', style: 'CODE' }];
+	var INLINE_STYLE_BUTTONS = exports.INLINE_STYLE_BUTTONS = [{ label: 'Bold', style: 'BOLD' }, { label: 'Italic', style: 'ITALIC' }, { label: 'Strikethrough', style: 'STRIKETHROUGH' }, { label: 'Underline', style: 'UNDERLINE' }, { label: 'Monospace', style: 'CODE' }];
 
 	var BLOCK_TYPE_DROPDOWN = exports.BLOCK_TYPE_DROPDOWN = [{ label: 'Normal', style: 'unstyled' }, { label: 'Heading Large', style: 'header-one' }, { label: 'Heading Medium', style: 'header-two' }, { label: 'Heading Small', style: 'header-three' }, { label: 'Code Block', style: 'code-block' }];
 	var BLOCK_TYPE_BUTTONS = exports.BLOCK_TYPE_BUTTONS = [{ label: 'UL', style: 'unordered-list-item' }, { label: 'OL', style: 'ordered-list-item' }, { label: 'Blockquote', style: 'blockquote' }];
