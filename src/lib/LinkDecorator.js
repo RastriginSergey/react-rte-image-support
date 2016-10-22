@@ -8,6 +8,9 @@ import type {ContentBlock} from 'draft-js';
 // TODO: Use a more specific type here.
 type ReactNode = any;
 
+const FIELD_REGEX = /\{\{[\w_]+}}/g;
+
+
 type Props = {
   children: ReactNode,
   entityKey: string,
@@ -23,11 +26,13 @@ function Link(props_: Props) {
 }
 
 function findLinkEntities(contentBlock: ContentBlock, callback: EntityRangeCallback) {
+  const text = contentBlock.getText();
   contentBlock.findEntityRanges((character) => {
     const entityKey = character.getEntity();
     return (
       entityKey != null &&
-      Entity.get(entityKey).getType() === ENTITY_TYPE.LINK
+      Entity.get(entityKey).getType() === ENTITY_TYPE.LINK &&
+      FIELD_REGEX.exec(text) !== null
     );
   }, callback);
 }
