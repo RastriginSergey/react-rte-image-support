@@ -16260,7 +16260,7 @@ function(module, exports, __webpack_require__) {
     Object.defineProperty(exports, "__esModule", {
         value: !0
     });
-    var _react = __webpack_require__(1), _react2 = _interopRequireDefault(_react), _draftJs = __webpack_require__(2), _draftJsUtils = __webpack_require__(146), FIELD_REGEX = /\w+( \w+)*/g;
+    var _react = __webpack_require__(1), _react2 = _interopRequireDefault(_react), _draftJs = __webpack_require__(2), _draftJsUtils = __webpack_require__(146), FIELD_REGEX = /^\w+( \w+)*$/g;
     exports["default"] = {
         strategy: findLinkEntities,
         component: Link

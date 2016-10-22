@@ -8,7 +8,7 @@ import type {ContentBlock} from 'draft-js';
 // TODO: Use a more specific type here.
 type ReactNode = any;
 
-const FIELD_REGEX = /\w+( \w+)*/g;
+const FIELD_REGEX = /^\w+( \w+)*$/g;
 
 
 type Props = {

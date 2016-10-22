@@ -45559,7 +45559,7 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// TODO: Use a more specific type here.
-	var FIELD_REGEX = /\w+( \w+)*/g;
+	var FIELD_REGEX = /^\w+( \w+)*$/g;
 
 
 	function Link(props_) {
