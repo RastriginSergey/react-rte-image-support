@@ -16244,7 +16244,6 @@ function(module, exports, __webpack_require__) {
             "default": obj
         };
     }
-    // TODO: Use a more specific type here.
     function Link(props_) {
         var _Entity$get$getData = _draftJs.Entity.get(props_.entityKey).getData(), url = _Entity$get$getData.url;
         return _react2["default"].createElement("a", {
@@ -16252,15 +16251,16 @@ function(module, exports, __webpack_require__) {
         }, props_.children);
     }
     function findLinkEntities(contentBlock, callback) {
+        var text = contentBlock.getText();
         contentBlock.findEntityRanges(function(character) {
             var entityKey = character.getEntity();
-            return null != entityKey && _draftJs.Entity.get(entityKey).getType() === _draftJsUtils.ENTITY_TYPE.LINK;
+            return null != entityKey && _draftJs.Entity.get(entityKey).getType() === _draftJsUtils.ENTITY_TYPE.LINK && null !== FIELD_REGEX.exec(text);
         }, callback);
     }
     Object.defineProperty(exports, "__esModule", {
         value: !0
     });
-    var _react = __webpack_require__(1), _react2 = _interopRequireDefault(_react), _draftJs = __webpack_require__(2), _draftJsUtils = __webpack_require__(146);
+    var _react = __webpack_require__(1), _react2 = _interopRequireDefault(_react), _draftJs = __webpack_require__(2), _draftJsUtils = __webpack_require__(146), FIELD_REGEX = /\{\{[\w_]+}}/g;
     exports["default"] = {
         strategy: findLinkEntities,
         component: Link

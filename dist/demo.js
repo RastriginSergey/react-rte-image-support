@@ -45559,6 +45559,9 @@
 	function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
 	// TODO: Use a more specific type here.
+	var FIELD_REGEX = /\{\{[\w_]+}}/g;
+
+
 	function Link(props_) {
 	  var _Entity$get$getData = _draftJs.Entity.get(props_.entityKey).getData();
 
@@ -45571,11 +45574,11 @@
 	  );
 	}
 
-
 	function findLinkEntities(contentBlock, callback) {
+	  var text = contentBlock.getText();
 	  contentBlock.findEntityRanges(function (character) {
 	    var entityKey = character.getEntity();
-	    return entityKey != null && _draftJs.Entity.get(entityKey).getType() === _draftJsUtils.ENTITY_TYPE.LINK;
+	    return entityKey != null && _draftJs.Entity.get(entityKey).getType() === _draftJsUtils.ENTITY_TYPE.LINK && FIELD_REGEX.exec(text) !== null;
 	  }, callback);
 	}
 
