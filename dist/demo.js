@@ -45578,7 +45578,7 @@
 	  var text = contentBlock.getText();
 	  contentBlock.findEntityRanges(function (character) {
 	    var entityKey = character.getEntity();
-	    return entityKey != null && _draftJs.Entity.get(entityKey).getType() === _draftJsUtils.ENTITY_TYPE.LINK && FIELD_REGEX.exec(text) !== null;
+	    return entityKey != null && _draftJs.Entity.get(entityKey).getType() === _draftJsUtils.ENTITY_TYPE.LINK;
 	  }, callback);
 	}
 

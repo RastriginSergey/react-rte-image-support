@@ -16251,16 +16251,16 @@ function(module, exports, __webpack_require__) {
         }, props_.children);
     }
     function findLinkEntities(contentBlock, callback) {
-        var text = contentBlock.getText();
+        contentBlock.getText();
         contentBlock.findEntityRanges(function(character) {
             var entityKey = character.getEntity();
-            return null != entityKey && _draftJs.Entity.get(entityKey).getType() === _draftJsUtils.ENTITY_TYPE.LINK && null !== FIELD_REGEX.exec(text);
+            return null != entityKey && _draftJs.Entity.get(entityKey).getType() === _draftJsUtils.ENTITY_TYPE.LINK;
         }, callback);
     }
     Object.defineProperty(exports, "__esModule", {
         value: !0
     });
-    var _react = __webpack_require__(1), _react2 = _interopRequireDefault(_react), _draftJs = __webpack_require__(2), _draftJsUtils = __webpack_require__(146), FIELD_REGEX = /^\w+( \w+)*$/g;
+    var _react = __webpack_require__(1), _react2 = _interopRequireDefault(_react), _draftJs = __webpack_require__(2), _draftJsUtils = __webpack_require__(146);
     exports["default"] = {
         strategy: findLinkEntities,
         component: Link

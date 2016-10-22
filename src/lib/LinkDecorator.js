@@ -31,8 +31,7 @@ function findLinkEntities(contentBlock: ContentBlock, callback: EntityRangeCallb
     const entityKey = character.getEntity();
     return (
       entityKey != null &&
-      Entity.get(entityKey).getType() === ENTITY_TYPE.LINK &&
-      FIELD_REGEX.exec(text) !== null
+      Entity.get(entityKey).getType() === ENTITY_TYPE.LINK
     );
   }, callback);
 }
