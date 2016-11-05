@@ -43,7 +43,7 @@ export default class EditorDemo extends Component {
             placeholder="Tell a story"
             toolbarClassName="demo-toolbar"
             editorClassName="demo-editor"
-            toolbarItems={['Bold', 'Italic']}
+            toolbarItems={['Bold', 'Italic', 'Link', 'Image']}
             readOnly={this.state.readOnly}
           />
         </div>

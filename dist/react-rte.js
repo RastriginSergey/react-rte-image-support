@@ -290,7 +290,7 @@ function(module, exports, __webpack_require__) {
             value: function(editorState) {
                 var selection = editorState.getSelection(), blocks = (0, _getBlocksInSelection2["default"])(editorState), selectImage = function(block, offset) {
                     var imageKey = block.getEntityAt(offset);
-                    Entity.mergeData(imageKey, {
+                    _draftJs.Entity.mergeData(imageKey, {
                         selected: !0
                     });
                 }, isInMiddleBlock = function(index) {

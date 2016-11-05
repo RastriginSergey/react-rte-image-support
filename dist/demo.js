@@ -21520,7 +21520,7 @@
 	            placeholder: 'Tell a story',
 	            toolbarClassName: 'demo-toolbar',
 	            editorClassName: 'demo-editor',
-	            toolbarItems: ['Bold', 'Italic'],
+	            toolbarItems: ['Bold', 'Italic', 'Link', 'Image'],
 	            readOnly: this.state.readOnly
 	          })
 	        ),
@@ -21993,7 +21993,7 @@
 
 	      var selectImage = function selectImage(block, offset) {
 	        var imageKey = block.getEntityAt(offset);
-	        Entity.mergeData(imageKey, { selected: true });
+	        _draftJs.Entity.mergeData(imageKey, { selected: true });
 	      };
 
 	      var isInMiddleBlock = function isInMiddleBlock(index) {
