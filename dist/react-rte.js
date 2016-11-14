@@ -12219,13 +12219,21 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "_setLink",
             value: function(url) {
-                var editorState = this.props.editorState, selection = editorState.getSelection(), entityKey = _draftJs.Entity.create(_draftJsUtils.ENTITY_TYPE.LINK, "MUTABLE", {
+                var _this4 = this, editorState = this.props.editorState, selection = editorState.getSelection(), entityKey = _draftJs.Entity.create(_draftJsUtils.ENTITY_TYPE.LINK, "MUTABLE", {
                     url: url
                 });
                 this.setState({
                     showLinkInput: !1
-                }), this.props.onChange(_draftJs.RichUtils.toggleLink(editorState, selection, entityKey)), 
-                this._focusEditor();
+                });
+                var linked = _draftJs.RichUtils.toggleLink(editorState, selection, entityKey), collapsed = selection.merge({
+                    anchorOffset: selection.getEndOffset(),
+                    focusOffset: selection.getEndOffset()
+                });
+                this.props.onChange(_draftJs.EditorState.forceSelection(linked, collapsed)), setTimeout(function() {
+                    _this4._focusEditor();
+                    var editorState = _this4.props.editorState, selection = editorState.getSelection(), cs = _draftJs.Modifier.insertText(editorState.getCurrentContent(), selection, " ");
+                    _this4.props.onChange(_draftJs.EditorState.push(editorState, cs, "insert-text"));
+                }, 10);
             }
         }, {
             key: "_removeLink",
@@ -12278,10 +12286,10 @@ function(module, exports, __webpack_require__) {
         }, {
             key: "_focusEditor",
             value: function() {
-                var _this4 = this;
+                var _this5 = this;
                 // Hacky: Wait to focus the editor so we don't lose selection.
                 setTimeout(function() {
-                    _this4.props.focusEditor();
+                    _this5.props.focusEditor();
                 }, 50);
             }
         } ]), EditorToolbar;

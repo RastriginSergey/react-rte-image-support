@@ -39995,7 +39995,7 @@
 	'use strict';
 
 	Object.defineProperty(exports, "__esModule", {
-	  value: true
+	    value: true
 	});
 
 	var _createClass = function () { function defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } } return function (Constructor, protoProps, staticProps) { if (protoProps) defineProperties(Constructor.prototype, protoProps); if (staticProps) defineProperties(Constructor, staticProps); return Constructor; }; }();
@@ -40068,338 +40068,352 @@
 
 
 	var EditorToolbar = function (_Component) {
-	  _inherits(EditorToolbar, _Component);
+	    _inherits(EditorToolbar, _Component);
 
-	  function EditorToolbar() {
-	    _classCallCheck(this, EditorToolbar);
+	    function EditorToolbar() {
+	        _classCallCheck(this, EditorToolbar);
 
-	    var _this = _possibleConstructorReturn(this, (EditorToolbar.__proto__ || Object.getPrototypeOf(EditorToolbar)).apply(this, arguments));
+	        var _this = _possibleConstructorReturn(this, (EditorToolbar.__proto__ || Object.getPrototypeOf(EditorToolbar)).apply(this, arguments));
 
-	    (0, _classAutobind2.default)(_this);
-	    _this.state = {
-	      showLinkInput: false
-	    };
-	    return _this;
-	  }
-
-	  _createClass(EditorToolbar, [{
-	    key: 'componentWillMount',
-	    value: function componentWillMount() {
-	      // Technically, we should also attach/detach event listeners when the
-	      // `keyEmitter` prop changes.
-	      this.props.keyEmitter.on('keypress', this._onKeypress);
+	        (0, _classAutobind2.default)(_this);
+	        _this.state = {
+	            showLinkInput: false
+	        };
+	        return _this;
 	    }
-	  }, {
-	    key: 'componentWillUnmount',
-	    value: function componentWillUnmount() {
-	      this.props.keyEmitter.removeListener('keypress', this._onKeypress);
-	    }
-	  }, {
-	    key: 'render',
-	    value: function render() {
-	      var className = this.props.className;
 
-	      return _react2.default.createElement(
-	        'div',
-	        { className: (0, _classnames2.default)(_EditorToolbar2.default.root, className) },
-	        this._renderInlineStyleButtons(),
-	        this._renderBlockTypeButtons(),
-	        this._renderLinkButtons(),
-	        this._renderImageButton(),
-	        this._renderBlockTypeDropdown(),
-	        this._renderUndoRedo()
-	      );
-	    }
-	  }, {
-	    key: '_renderBlockTypeDropdown',
-	    value: function _renderBlockTypeDropdown() {
-	      if (this.props.toolbarItems.indexOf('Type') == -1) {
-	        return '';
-	      }
-	      var blockType = this._getCurrentBlockType();
-	      var choices = new Map(_EditorToolbarConfig.BLOCK_TYPE_DROPDOWN.map(function (type) {
-	        return [type.style, type.label];
-	      }));
-	      if (!choices.has(blockType)) {
-	        blockType = Array.from(choices.keys())[0];
-	      }
-	      return _react2.default.createElement(
-	        _ButtonGroup2.default,
-	        null,
-	        _react2.default.createElement(_Dropdown2.default, {
-	          choices: choices,
-	          selectedKey: blockType,
-	          onChange: this._selectBlockType
-	        })
-	      );
-	    }
-	  }, {
-	    key: '_renderBlockTypeButtons',
-	    value: function _renderBlockTypeButtons() {
-	      var _this2 = this;
-
-	      var blockType = this._getCurrentBlockType();
-	      var filteredButtons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS;
-	      if (this.props.toolbarItems) {
-	        filteredButtons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS.filter(function (element, index, arr) {
-	          return _this2.props.toolbarItems.indexOf(element.label) != -1;
-	        });
-	      }
-	      var buttons = filteredButtons.map(function (type, index) {
-	        return _react2.default.createElement(_StyleButton2.default, {
-	          key: String(index),
-	          isActive: type.style === blockType,
-	          label: type.label,
-	          onToggle: _this2._toggleBlockType,
-	          style: type.style
-	        });
-	      });
-	      return _react2.default.createElement(
-	        _ButtonGroup2.default,
-	        null,
-	        buttons
-	      );
-	    }
-	  }, {
-	    key: '_renderInlineStyleButtons',
-	    value: function _renderInlineStyleButtons() {
-	      var _this3 = this;
-
-	      var editorState = this.props.editorState;
-
-	      var currentStyle = editorState.getCurrentInlineStyle();
-	      var filteredButtons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS;
-	      if (this.props.toolbarItems) {
-	        filteredButtons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS.filter(function (element, index, arr) {
-	          return _this3.props.toolbarItems.indexOf(element.label) != -1;
-	        });
-	      }
-	      var buttons = filteredButtons.map(function (type, index) {
-	        return _react2.default.createElement(_StyleButton2.default, {
-	          key: String(index),
-	          isActive: currentStyle.has(type.style),
-	          label: type.label,
-	          onToggle: _this3._toggleInlineStyle,
-	          style: type.style
-	        });
-	      });
-	      return _react2.default.createElement(
-	        _ButtonGroup2.default,
-	        null,
-	        buttons
-	      );
-	    }
-	  }, {
-	    key: '_renderLinkButtons',
-	    value: function _renderLinkButtons() {
-	      if (this.props.toolbarItems.indexOf('Link') == -1) {
-	        return '';
-	      }
-	      var editorState = this.props.editorState;
-
-	      var selection = editorState.getSelection();
-	      var entity = this._getEntityAtCursor();
-	      var hasSelection = !selection.isCollapsed();
-	      var isCursorOnLink = entity != null && entity.type === _draftJsUtils.ENTITY_TYPE.LINK;
-	      var shouldShowLinkButton = hasSelection || isCursorOnLink;
-	      return _react2.default.createElement(
-	        _ButtonGroup2.default,
-	        null,
-	        _react2.default.createElement(_PopoverIconButton2.default, {
-	          label: 'Link',
-	          iconName: 'link',
-	          isDisabled: !shouldShowLinkButton,
-	          showPopover: this.state.showLinkInput,
-	          onTogglePopover: this._toggleShowLinkInput,
-	          onSubmit: this._setLink
-	        }),
-	        _react2.default.createElement(_IconButton2.default, {
-	          label: 'Remove Link',
-	          iconName: 'remove-link',
-	          isDisabled: !isCursorOnLink,
-	          onClick: this._removeLink,
-	          focusOnClick: false
-	        })
-	      );
-	    }
-	  }, {
-	    key: '_renderUndoRedo',
-	    value: function _renderUndoRedo() {
-	      if (this.props.toolbarItems.indexOf('Undo') == -1) {
-	        return '';
-	      }
-	      var editorState = this.props.editorState;
-
-	      var canUndo = editorState.getUndoStack().size !== 0;
-	      var canRedo = editorState.getRedoStack().size !== 0;
-	      return _react2.default.createElement(
-	        _ButtonGroup2.default,
-	        null,
-	        _react2.default.createElement(_IconButton2.default, {
-	          label: 'Undo',
-	          iconName: 'undo',
-	          isDisabled: !canUndo,
-	          onClick: this._undo,
-	          focusOnClick: false
-	        }),
-	        _react2.default.createElement(_IconButton2.default, {
-	          label: 'Redo',
-	          iconName: 'redo',
-	          isDisabled: !canRedo,
-	          onClick: this._redo,
-	          focusOnClick: false
-	        })
-	      );
-	    }
-	  }, {
-	    key: '_onKeypress',
-	    value: function _onKeypress(event, eventFlags) {
-	      // Catch cmd+k for use with link insertion.
-	      if ((0, _KeyBindingUtil.hasCommandModifier)(event) && event.keyCode === 75) {
-	        // TODO: Ensure there is some text selected.
-	        this.setState({ showLinkInput: true });
-	        eventFlags.wasHandled = true;
-	      }
-	    }
-	  }, {
-	    key: '_toggleShowLinkInput',
-	    value: function _toggleShowLinkInput(event) {
-	      var isShowing = this.state.showLinkInput;
-	      // If this is a hide request, decide if we should focus the editor.
-	      if (isShowing) {
-	        var shouldFocusEditor = true;
-	        if (event && event.type === 'click') {
-	          // TODO: Use a better way to get the editor root node.
-	          var editorRoot = _reactDom2.default.findDOMNode(this).parentNode;
-	          var _document = document;
-	          var activeElement = _document.activeElement;
-
-	          var wasClickAway = activeElement == null || activeElement === document.body;
-	          if (!wasClickAway && !editorRoot.contains(activeElement)) {
-	            shouldFocusEditor = false;
-	          }
+	    _createClass(EditorToolbar, [{
+	        key: 'componentWillMount',
+	        value: function componentWillMount() {
+	            // Technically, we should also attach/detach event listeners when the
+	            // `keyEmitter` prop changes.
+	            this.props.keyEmitter.on('keypress', this._onKeypress);
 	        }
-	        if (shouldFocusEditor) {
-	          this.props.focusEditor();
+	    }, {
+	        key: 'componentWillUnmount',
+	        value: function componentWillUnmount() {
+	            this.props.keyEmitter.removeListener('keypress', this._onKeypress);
 	        }
-	      }
-	      this.setState({ showLinkInput: !isShowing });
-	    }
-	  }, {
-	    key: '_setImage',
-	    value: function _setImage(src) {
-	      var editorState = this.props.editorState;
+	    }, {
+	        key: 'render',
+	        value: function render() {
+	            var className = this.props.className;
 
-	      var contentState = editorState.getCurrentContent();
-	      var selection = editorState.getSelection();
-	      var entityKey = _draftJs.Entity.create(_draftJsUtils.ENTITY_TYPE.IMAGE, 'IMMUTABLE', { src: src });
-	      var updatedContent = _draftJs.Modifier.insertText(contentState, selection, ' ', null, entityKey);
-	      this.setState({ showImageInput: false });
-	      this.props.onChange(_draftJs.EditorState.push(editorState, updatedContent));
-	      this._focusEditor();
-	    }
-	  }, {
-	    key: '_renderImageButton',
-	    value: function _renderImageButton() {
-	      if (this.props.toolbarItems.indexOf('Image') == -1) {
-	        return '';
-	      }
-	      return _react2.default.createElement(
-	        _ButtonGroup2.default,
-	        null,
-	        _react2.default.createElement(_PopoverIconButton.PopoverImageButton, {
-	          label: 'Image',
-	          iconName: 'image',
-	          showPopover: this.state.showImageInput,
-	          onTogglePopover: this._toggleShowImageInput,
-	          onSubmit: this._setImage
-	        })
-	      );
-	    }
-	  }, {
-	    key: '_setLink',
-	    value: function _setLink(url) {
-	      var editorState = this.props.editorState;
+	            return _react2.default.createElement(
+	                'div',
+	                { className: (0, _classnames2.default)(_EditorToolbar2.default.root, className) },
+	                this._renderInlineStyleButtons(),
+	                this._renderBlockTypeButtons(),
+	                this._renderLinkButtons(),
+	                this._renderImageButton(),
+	                this._renderBlockTypeDropdown(),
+	                this._renderUndoRedo()
+	            );
+	        }
+	    }, {
+	        key: '_renderBlockTypeDropdown',
+	        value: function _renderBlockTypeDropdown() {
+	            if (this.props.toolbarItems.indexOf('Type') == -1) {
+	                return '';
+	            }
+	            var blockType = this._getCurrentBlockType();
+	            var choices = new Map(_EditorToolbarConfig.BLOCK_TYPE_DROPDOWN.map(function (type) {
+	                return [type.style, type.label];
+	            }));
+	            if (!choices.has(blockType)) {
+	                blockType = Array.from(choices.keys())[0];
+	            }
+	            return _react2.default.createElement(
+	                _ButtonGroup2.default,
+	                null,
+	                _react2.default.createElement(_Dropdown2.default, {
+	                    choices: choices,
+	                    selectedKey: blockType,
+	                    onChange: this._selectBlockType
+	                })
+	            );
+	        }
+	    }, {
+	        key: '_renderBlockTypeButtons',
+	        value: function _renderBlockTypeButtons() {
+	            var _this2 = this;
 
-	      var selection = editorState.getSelection();
-	      var entityKey = _draftJs.Entity.create(_draftJsUtils.ENTITY_TYPE.LINK, 'MUTABLE', { url: url });
-	      this.setState({ showLinkInput: false });
-	      this.props.onChange(_draftJs.RichUtils.toggleLink(editorState, selection, entityKey));
-	      this._focusEditor();
-	    }
-	  }, {
-	    key: '_removeLink',
-	    value: function _removeLink() {
-	      var editorState = this.props.editorState;
+	            var blockType = this._getCurrentBlockType();
+	            var filteredButtons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS;
+	            if (this.props.toolbarItems) {
+	                filteredButtons = _EditorToolbarConfig.BLOCK_TYPE_BUTTONS.filter(function (element, index, arr) {
+	                    return _this2.props.toolbarItems.indexOf(element.label) != -1;
+	                });
+	            }
+	            var buttons = filteredButtons.map(function (type, index) {
+	                return _react2.default.createElement(_StyleButton2.default, {
+	                    key: String(index),
+	                    isActive: type.style === blockType,
+	                    label: type.label,
+	                    onToggle: _this2._toggleBlockType,
+	                    style: type.style
+	                });
+	            });
+	            return _react2.default.createElement(
+	                _ButtonGroup2.default,
+	                null,
+	                buttons
+	            );
+	        }
+	    }, {
+	        key: '_renderInlineStyleButtons',
+	        value: function _renderInlineStyleButtons() {
+	            var _this3 = this;
 
-	      var entity = (0, _getEntityAtCursor3.default)(editorState);
-	      if (entity != null) {
-	        var blockKey = entity.blockKey;
-	        var startOffset = entity.startOffset;
-	        var endOffset = entity.endOffset;
+	            var editorState = this.props.editorState;
 
-	        this.props.onChange((0, _clearEntityForRange2.default)(editorState, blockKey, startOffset, endOffset));
-	      }
-	    }
-	  }, {
-	    key: '_getEntityAtCursor',
-	    value: function _getEntityAtCursor() {
-	      var editorState = this.props.editorState;
+	            var currentStyle = editorState.getCurrentInlineStyle();
+	            var filteredButtons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS;
+	            if (this.props.toolbarItems) {
+	                filteredButtons = _EditorToolbarConfig.INLINE_STYLE_BUTTONS.filter(function (element, index, arr) {
+	                    return _this3.props.toolbarItems.indexOf(element.label) != -1;
+	                });
+	            }
+	            var buttons = filteredButtons.map(function (type, index) {
+	                return _react2.default.createElement(_StyleButton2.default, {
+	                    key: String(index),
+	                    isActive: currentStyle.has(type.style),
+	                    label: type.label,
+	                    onToggle: _this3._toggleInlineStyle,
+	                    style: type.style
+	                });
+	            });
+	            return _react2.default.createElement(
+	                _ButtonGroup2.default,
+	                null,
+	                buttons
+	            );
+	        }
+	    }, {
+	        key: '_renderLinkButtons',
+	        value: function _renderLinkButtons() {
+	            if (this.props.toolbarItems.indexOf('Link') == -1) {
+	                return '';
+	            }
+	            var editorState = this.props.editorState;
 
-	      var entity = (0, _getEntityAtCursor3.default)(editorState);
-	      return entity == null ? null : _draftJs.Entity.get(entity.entityKey);
-	    }
-	  }, {
-	    key: '_getCurrentBlockType',
-	    value: function _getCurrentBlockType() {
-	      var editorState = this.props.editorState;
+	            var selection = editorState.getSelection();
+	            var entity = this._getEntityAtCursor();
+	            var hasSelection = !selection.isCollapsed();
+	            var isCursorOnLink = entity != null && entity.type === _draftJsUtils.ENTITY_TYPE.LINK;
+	            var shouldShowLinkButton = hasSelection || isCursorOnLink;
+	            return _react2.default.createElement(
+	                _ButtonGroup2.default,
+	                null,
+	                _react2.default.createElement(_PopoverIconButton2.default, {
+	                    label: 'Link',
+	                    iconName: 'link',
+	                    isDisabled: !shouldShowLinkButton,
+	                    showPopover: this.state.showLinkInput,
+	                    onTogglePopover: this._toggleShowLinkInput,
+	                    onSubmit: this._setLink
+	                }),
+	                _react2.default.createElement(_IconButton2.default, {
+	                    label: 'Remove Link',
+	                    iconName: 'remove-link',
+	                    isDisabled: !isCursorOnLink,
+	                    onClick: this._removeLink,
+	                    focusOnClick: false
+	                })
+	            );
+	        }
+	    }, {
+	        key: '_renderUndoRedo',
+	        value: function _renderUndoRedo() {
+	            if (this.props.toolbarItems.indexOf('Undo') == -1) {
+	                return '';
+	            }
+	            var editorState = this.props.editorState;
 
-	      var selection = editorState.getSelection();
-	      return editorState.getCurrentContent().getBlockForKey(selection.getStartKey()).getType();
-	    }
-	  }, {
-	    key: '_selectBlockType',
-	    value: function _selectBlockType() {
-	      this._toggleBlockType.apply(this, arguments);
-	      this._focusEditor();
-	    }
-	  }, {
-	    key: '_toggleBlockType',
-	    value: function _toggleBlockType(blockType) {
-	      this.props.onChange(_draftJs.RichUtils.toggleBlockType(this.props.editorState, blockType));
-	    }
-	  }, {
-	    key: '_toggleInlineStyle',
-	    value: function _toggleInlineStyle(inlineStyle) {
-	      this.props.onChange(_draftJs.RichUtils.toggleInlineStyle(this.props.editorState, inlineStyle));
-	    }
-	  }, {
-	    key: '_undo',
-	    value: function _undo() {
-	      var editorState = this.props.editorState;
+	            var canUndo = editorState.getUndoStack().size !== 0;
+	            var canRedo = editorState.getRedoStack().size !== 0;
+	            return _react2.default.createElement(
+	                _ButtonGroup2.default,
+	                null,
+	                _react2.default.createElement(_IconButton2.default, {
+	                    label: 'Undo',
+	                    iconName: 'undo',
+	                    isDisabled: !canUndo,
+	                    onClick: this._undo,
+	                    focusOnClick: false
+	                }),
+	                _react2.default.createElement(_IconButton2.default, {
+	                    label: 'Redo',
+	                    iconName: 'redo',
+	                    isDisabled: !canRedo,
+	                    onClick: this._redo,
+	                    focusOnClick: false
+	                })
+	            );
+	        }
+	    }, {
+	        key: '_onKeypress',
+	        value: function _onKeypress(event, eventFlags) {
+	            // Catch cmd+k for use with link insertion.
+	            if ((0, _KeyBindingUtil.hasCommandModifier)(event) && event.keyCode === 75) {
+	                // TODO: Ensure there is some text selected.
+	                this.setState({ showLinkInput: true });
+	                eventFlags.wasHandled = true;
+	            }
+	        }
+	    }, {
+	        key: '_toggleShowLinkInput',
+	        value: function _toggleShowLinkInput(event) {
+	            var isShowing = this.state.showLinkInput;
+	            // If this is a hide request, decide if we should focus the editor.
+	            if (isShowing) {
+	                var shouldFocusEditor = true;
+	                if (event && event.type === 'click') {
+	                    // TODO: Use a better way to get the editor root node.
+	                    var editorRoot = _reactDom2.default.findDOMNode(this).parentNode;
+	                    var _document = document;
+	                    var activeElement = _document.activeElement;
 
-	      this.props.onChange(_draftJs.EditorState.undo(editorState));
-	    }
-	  }, {
-	    key: '_redo',
-	    value: function _redo() {
-	      var editorState = this.props.editorState;
+	                    var wasClickAway = activeElement == null || activeElement === document.body;
+	                    if (!wasClickAway && !editorRoot.contains(activeElement)) {
+	                        shouldFocusEditor = false;
+	                    }
+	                }
+	                if (shouldFocusEditor) {
+	                    this.props.focusEditor();
+	                }
+	            }
+	            this.setState({ showLinkInput: !isShowing });
+	        }
+	    }, {
+	        key: '_setImage',
+	        value: function _setImage(src) {
+	            var editorState = this.props.editorState;
 
-	      this.props.onChange(_draftJs.EditorState.redo(editorState));
-	    }
-	  }, {
-	    key: '_focusEditor',
-	    value: function _focusEditor() {
-	      var _this4 = this;
+	            var contentState = editorState.getCurrentContent();
+	            var selection = editorState.getSelection();
+	            var entityKey = _draftJs.Entity.create(_draftJsUtils.ENTITY_TYPE.IMAGE, 'IMMUTABLE', { src: src });
+	            var updatedContent = _draftJs.Modifier.insertText(contentState, selection, ' ', null, entityKey);
+	            this.setState({ showImageInput: false });
+	            this.props.onChange(_draftJs.EditorState.push(editorState, updatedContent));
+	            this._focusEditor();
+	        }
+	    }, {
+	        key: '_renderImageButton',
+	        value: function _renderImageButton() {
+	            if (this.props.toolbarItems.indexOf('Image') == -1) {
+	                return '';
+	            }
+	            return _react2.default.createElement(
+	                _ButtonGroup2.default,
+	                null,
+	                _react2.default.createElement(_PopoverIconButton.PopoverImageButton, {
+	                    label: 'Image',
+	                    iconName: 'image',
+	                    showPopover: this.state.showImageInput,
+	                    onTogglePopover: this._toggleShowImageInput,
+	                    onSubmit: this._setImage
+	                })
+	            );
+	        }
+	    }, {
+	        key: '_setLink',
+	        value: function _setLink(url) {
+	            var _this4 = this;
 
-	      // Hacky: Wait to focus the editor so we don't lose selection.
-	      setTimeout(function () {
-	        _this4.props.focusEditor();
-	      }, 50);
-	    }
-	  }]);
+	            var editorState = this.props.editorState;
 
-	  return EditorToolbar;
+	            var selection = editorState.getSelection();
+	            var entityKey = _draftJs.Entity.create(_draftJsUtils.ENTITY_TYPE.LINK, 'MUTABLE', { url: url });
+	            this.setState({ showLinkInput: false });
+	            var linked = _draftJs.RichUtils.toggleLink(editorState, selection, entityKey);
+	            var collapsed = selection.merge({
+	                anchorOffset: selection.getEndOffset(),
+	                focusOffset: selection.getEndOffset()
+	            });
+	            this.props.onChange(_draftJs.EditorState.forceSelection(linked, collapsed));
+	            setTimeout(function () {
+	                _this4._focusEditor();
+	                var editorState = _this4.props.editorState;
+
+	                var selection = editorState.getSelection();
+	                var cs = _draftJs.Modifier.insertText(editorState.getCurrentContent(), selection, ' ');
+	                _this4.props.onChange(_draftJs.EditorState.push(editorState, cs, 'insert-text'));
+	            }, 10);
+	        }
+	    }, {
+	        key: '_removeLink',
+	        value: function _removeLink() {
+	            var editorState = this.props.editorState;
+
+	            var entity = (0, _getEntityAtCursor3.default)(editorState);
+	            if (entity != null) {
+	                var blockKey = entity.blockKey;
+	                var startOffset = entity.startOffset;
+	                var endOffset = entity.endOffset;
+
+	                this.props.onChange((0, _clearEntityForRange2.default)(editorState, blockKey, startOffset, endOffset));
+	            }
+	        }
+	    }, {
+	        key: '_getEntityAtCursor',
+	        value: function _getEntityAtCursor() {
+	            var editorState = this.props.editorState;
+
+	            var entity = (0, _getEntityAtCursor3.default)(editorState);
+	            return entity == null ? null : _draftJs.Entity.get(entity.entityKey);
+	        }
+	    }, {
+	        key: '_getCurrentBlockType',
+	        value: function _getCurrentBlockType() {
+	            var editorState = this.props.editorState;
+
+	            var selection = editorState.getSelection();
+	            return editorState.getCurrentContent().getBlockForKey(selection.getStartKey()).getType();
+	        }
+	    }, {
+	        key: '_selectBlockType',
+	        value: function _selectBlockType() {
+	            this._toggleBlockType.apply(this, arguments);
+	            this._focusEditor();
+	        }
+	    }, {
+	        key: '_toggleBlockType',
+	        value: function _toggleBlockType(blockType) {
+	            this.props.onChange(_draftJs.RichUtils.toggleBlockType(this.props.editorState, blockType));
+	        }
+	    }, {
+	        key: '_toggleInlineStyle',
+	        value: function _toggleInlineStyle(inlineStyle) {
+	            this.props.onChange(_draftJs.RichUtils.toggleInlineStyle(this.props.editorState, inlineStyle));
+	        }
+	    }, {
+	        key: '_undo',
+	        value: function _undo() {
+	            var editorState = this.props.editorState;
+
+	            this.props.onChange(_draftJs.EditorState.undo(editorState));
+	        }
+	    }, {
+	        key: '_redo',
+	        value: function _redo() {
+	            var editorState = this.props.editorState;
+
+	            this.props.onChange(_draftJs.EditorState.redo(editorState));
+	        }
+	    }, {
+	        key: '_focusEditor',
+	        value: function _focusEditor() {
+	            var _this5 = this;
+
+	            // Hacky: Wait to focus the editor so we don't lose selection.
+	            setTimeout(function () {
+	                _this5.props.focusEditor();
+	            }, 50);
+	        }
+	    }]);
+
+	    return EditorToolbar;
 	}(_react.Component);
 
 	exports.default = EditorToolbar;
