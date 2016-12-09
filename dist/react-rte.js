@@ -123,8 +123,10 @@ function(module, exports, __webpack_require__) {
         var decorator = new _draftJs.CompositeDecorator(decorators);
         return _EditorValue2["default"].createEmpty(decorator);
     }
-    function createValueFromString(markup, format) {
-        var decorator = new _draftJs.CompositeDecorator([ _LinkDecorator2["default"], _ImageDecorator2["default"] ]);
+    function createValueFromString(markup, format, customDecorator) {
+        var decorators = [ _LinkDecorator2["default"], _ImageDecorator2["default"] ];
+        customDecorator && decorators.push(customDecorator);
+        var decorator = new _draftJs.CompositeDecorator(decorators);
         return _EditorValue2["default"].createFromString(markup, format, decorator);
     }
     Object.defineProperty(exports, "__esModule", {

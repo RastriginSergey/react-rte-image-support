@@ -326,8 +326,12 @@ function createEmptyValue(decorators): EditorValue {
   return EditorValue.createEmpty(decorator);
 }
 
-function createValueFromString(markup: string, format: string): EditorValue {
-  const decorator = new CompositeDecorator([LinkDecorator, ImageDecorator]);
+function createValueFromString(markup: string, format: string, customDecorator): EditorValue {
+  let decorators = [LinkDecorator, ImageDecorator];
+  if(customDecorator){
+    decorators.push(customDecorator)
+  }
+  const decorator = new CompositeDecorator(decorators);
 
   return EditorValue.createFromString(markup, format, decorator);
 }
