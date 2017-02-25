@@ -16257,6 +16257,7 @@ function(module, exports, __webpack_require__) {
     function Link(props_) {
         var _Entity$get$getData = _draftJs.Entity.get(props_.entityKey).getData(), url = _Entity$get$getData.url;
         return _react2["default"].createElement("a", {
+            className: "link",
             href: url
         }, props_.children);
     }

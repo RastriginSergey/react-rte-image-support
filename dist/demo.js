@@ -45587,7 +45587,7 @@
 
 	  return _react2.default.createElement(
 	    'a',
-	    { href: url },
+	    { className: 'link', href: url },
 	    props_.children
 	  );
 	}
